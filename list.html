@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(45deg, #4a148c, #880e4f); /* Purple to Pink gradient */
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      color: #ffffff; /* White text color */
+    }
+
+    h2 {
+      margin-top: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 80%; /* Adjust table width */
+      margin-top: 20px;
+      background-color: #ffffff; /* White background color for table */
+      border-radius: 8px; /* Rounded corners */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 12px; /* Increased padding */
+      color: #000000; /* Black text color for table content */
+    }
+
+    th {
+      background-color: #6a1b9a; /* Purple background color for table headers */
+      color: #ffffff; /* White text color for table headers */
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2; /* Light gray background for even rows */
+    }
+
+    a {
+      color: #0d47a1; /* Dark blue color for links */
+      text-decoration: underline; /* Underline links */
+    }
+
+    a:hover {
+      text-decoration: none; /* Remove underline on hover */
+    }
+  </style>
+</head>
+<body>
+  <h2>Item List</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Item ID</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody id="itemList"></tbody>
+  </table>
+
+  <script>
+    async function fetchItems() {
+      try {
+        const response = await fetch('http://localhost:3000/list', {
+          headers: {
+            'Authorization': localStorage.getItem('token')
+          }
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch items');
+        }
+        const data = await response.json();
+        const itemList = document.getElementById('itemList');
+        itemList.innerHTML = '';
+        data.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><a href="details.html?id=${item.itemId}">${item.itemId}</a></td>
+            <td style="color: #000000">${item.description}</td>
+          `;
+          itemList.appendChild(row);
+        });
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+
+    fetchItems();
+  </script>
+</body>
+</html>
